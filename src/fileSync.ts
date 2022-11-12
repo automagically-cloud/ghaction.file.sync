@@ -126,11 +126,17 @@ function filesToChanges(files: File[]): createPullRequest.Changes {
   const result = files.reduce(
     (obj: {[path: string]: createPullRequest.File}, file) => {
       const dest = file.dest ? file.dest : file.src
+      if (file.dest.endsWith('.sh') {
+        const mode = "100755",
+      } else {
+        const mode = "100644",
+      }
+      
       if (file.content) {
         obj[dest] = {
           content: file.content,
           encoding: 'base64',
-          mode: file.mode
+          mode: mode
         }
       }
       return obj
