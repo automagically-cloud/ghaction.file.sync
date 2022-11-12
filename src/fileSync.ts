@@ -129,7 +129,8 @@ function filesToChanges(files: File[]): createPullRequest.Changes {
       if (file.content) {
         obj[dest] = {
           content: file.content,
-          encoding: 'base64'
+          encoding: 'base64',
+          mode: file.mode
         }
       }
       return obj
