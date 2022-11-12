@@ -126,7 +126,7 @@ function filesToChanges(files: File[]): createPullRequest.Changes {
   const result = files.reduce(
     (obj: {[path: string]: createPullRequest.File}, file) => {
       const dest = file.dest ? file.dest : file.src
-      if (file.dest.endsWith('.sh') {
+      if (file.src.endsWith('.sh') {
         const mode = "100755",
       } else {
         const mode = "100644",
