@@ -68,13 +68,22 @@ export class FileSync {
     this.log.info('🏃 Running GitHub File Sync')
     const config = await this.loadConfigFile()
     for (const sync of config.syncs) {
-      this.log.startGroup(`📝 Fetching files from ${this.repoStr}`)
+      this.log.startGroup(`📝 2 Fetching files from ${this.repoStr}`)
       for (const file of sync.files) {
-        this.log.info(`📝 Fetching ${file.src}`)
+        this.log.info(`📝 2 Fetching ${file.src}`)
+
+
+        if (file.src.endsWith('.sh')) {
+            this.log.info(`📝 ${file.src} has .sh`)
+          }
+
         const {data} = await this.octokit.repos.getContent({
           ...this.repo,
           path: file.src
         })
+
+        this.log.info(`📝 ${data.toString}`)
+
         if ('content' in data) {
           file.content = data.content
         }
@@ -134,7 +143,7 @@ function filesToChanges(files: File[], log: Log): createPullRequest.Changes {
   const log2 = new Log(false)
 
   log2.info('log2 works')
-  
+
   log.info('')
   log.info('filesToChanges')
 
