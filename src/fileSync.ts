@@ -86,10 +86,10 @@ export class FileSync {
         const prOptions: createPullRequest.Options = {
           ...remoteRepo,
           title: `🔃 Synced files from ${this.repoStr}`,
-          body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by the [ghaction.file.sync](https://github.com/jetersen/ghaction.file.sync) workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`,
+          body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`,
           head: `${toRepoStr(this.repo, '-')}-${this.gitSha}`,
           createWhenEmpty: false,
-          changes: [filesToChanges(sync.files)]
+          changes: [filesToChanges(sync.files, this.log),]
         }
         if (this.dryRun) {
           this.log.info('✔ No pull request was created due to dry run')
@@ -122,16 +122,19 @@ function toRepoStr(repo: Repo, separator = '/'): string {
   return `${repo.owner}${separator}${repo.repo}`
 }
 
-function filesToChanges(files: File[]): createPullRequest.Changes {
+function filesToChanges(files: File[], log: Log): createPullRequest.Changes {
+
   const result = files.reduce(
     (obj: {[path: string]: createPullRequest.File}, file) => {
       const dest = file.dest ? file.dest : file.src
-      if (file.src.endsWith('.sh') {
-        const mode = "100755",
+
+      if (file.src.endsWith('.sh')) {
+        var mode = '100755'
+        log.info('🔑 Marking .sh file as executable')
       } else {
-        const mode = "100644",
+        var mode = '100644'
       }
-      
+
       if (file.content) {
         obj[dest] = {
           content: file.content,
