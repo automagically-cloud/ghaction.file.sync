@@ -91,7 +91,7 @@ export class FileSync {
           ...remoteRepo,
           title: `🔃 Synced files from ${this.repoStr}`,
           body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`,
-          head: `automagically-template-syncs`,
+          head: `service-templates--${this.gitSha}`,
           createWhenEmpty: false,
           changes: [filesToChanges(sync.files, this.log),]
         }
