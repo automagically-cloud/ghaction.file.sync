@@ -68,7 +68,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FileSync = void 0;
-const log_1 = __nccwpck_require__(3817);
 const js_yaml_1 = __nccwpck_require__(1917);
 class FileSync {
     constructor(inputs, context, octokit, log) {
@@ -76,7 +75,7 @@ class FileSync {
         this.log = log;
         this.octokit = octokit;
         this.configFile = inputs.configFile;
-        this.dryRun = true; //inputs.dryRun
+        this.dryRun = inputs.dryRun;
         this.repo = context.repo;
         this.gitSha = context.sha.substring(0, 12);
         this.runId = context.runId;
@@ -115,9 +114,9 @@ class FileSync {
             this.log.info('🏃 Running GitHub File Sync 2');
             const config = yield this.loadConfigFile();
             for (const sync of config.syncs) {
-                this.log.startGroup(`📝 2 Fetching files from ${this.repoStr}`);
+                this.log.startGroup(`📝 Fetching files from ${this.repoStr}`);
                 for (const file of sync.files) {
-                    this.log.info(`📝 2 Fetching ${file.src}`);
+                    this.log.info(`📝 Fetching ${file.src}`);
                     try {
                         if (file.src.endsWith('.sh')) {
                             this.log.info(`📝 has .sh`);
@@ -127,12 +126,6 @@ class FileSync {
                         this.log.info(error.message);
                     }
                     const { data } = yield this.octokit.repos.getContent(Object.assign(Object.assign({}, this.repo), { path: file.src }));
-                    try {
-                        this.log.info(`📝 ${data.toString}`);
-                    }
-                    catch (error) {
-                        this.log.info(error.message);
-                    }
                     if ('content' in data) {
                         file.content = data.content;
                     }
@@ -141,10 +134,7 @@ class FileSync {
                 for (const remoteRepoStr of sync.repos) {
                     const remoteRepo = this.toRepo(remoteRepoStr);
                     this.log.info(`💄 Creating pull request for ${toRepoStr(remoteRepo)}`);
-                    this.log.info(`👋 Here I am`);
-                    var changes = [filesToChanges(sync.files, this.log),];
-                    this.log.info(changes.toString());
-                    const prOptions = Object.assign(Object.assign({}, remoteRepo), { title: `🔃 Synced files from ${this.repoStr}`, body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`, head: `automagically-template-syncs`, createWhenEmpty: false, changes: changes });
+                    const prOptions = Object.assign(Object.assign({}, remoteRepo), { title: `🔃 Synced files from ${this.repoStr}`, body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`, head: `automagically-template-syncs`, createWhenEmpty: false, changes: [filesToChanges(sync.files, this.log),] });
                     if (this.dryRun) {
                         this.log.info('✔ No pull request was created due to dry run');
                     }
@@ -177,29 +167,22 @@ function toRepoStr(repo, separator = '/') {
     return `${repo.owner}${separator}${repo.repo}`;
 }
 function filesToChanges(files, log) {
-    const log2 = new log_1.Log(false);
-    log2.info('log2 works');
-    log.info('');
-    log.info('filesToChanges');
     const result = files.reduce((obj, file) => {
         const dest = file.dest ? file.dest : file.src;
-        log.info('Debug:  ${file.src} + ${file.content}');
         if (file.content) {
-            log.info('Debug:  ${file.src}');
             if (file.src.endsWith('.sh')) {
                 obj[dest] = {
                     content: file.content,
                     encoding: 'base64',
                     mode: '100755'
                 };
-                log.info('🔑 Marking .sh file as executable');
+                log.info(`🔑 Marking .sh file ${file.src} as executable`);
             }
             else {
                 obj[dest] = {
                     content: file.content,
                     encoding: 'base64',
                 };
-                log.info('🔑 Not touching this file');
             }
         }
         return obj;
