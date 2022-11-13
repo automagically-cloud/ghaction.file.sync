@@ -72,17 +72,24 @@ export class FileSync {
       for (const file of sync.files) {
         this.log.info(`📝 2 Fetching ${file.src}`)
 
-
-        if (file.src.endsWith('.sh')) {
-            this.log.info(`📝 ${file.src} has .sh`)
+        try {
+          if (file.src.endsWith('.sh')) {
+            this.log.info(`📝 has .sh`)
           }
+        } catch (error) {
+            this.log.info(error.message)
+        } 
 
         const {data} = await this.octokit.repos.getContent({
           ...this.repo,
           path: file.src
         })
 
-        this.log.info(`📝 ${data.toString}`)
+        try {
+          this.log.info(`📝 ${data.toString}`)
+        } catch (error) {
+            this.log.info(error.message)
+        } 
 
         if ('content' in data) {
           file.content = data.content
