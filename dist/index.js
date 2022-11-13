@@ -116,14 +116,6 @@ class FileSync {
                 this.log.startGroup(`📝 Fetching files from ${this.repoStr}`);
                 for (const file of sync.files) {
                     this.log.info(`📝 Fetching ${file.src}`);
-                    try {
-                        if (file.src.endsWith('.sh')) {
-                            this.log.info(`📝 has .sh`);
-                        }
-                    }
-                    catch (error) {
-                        this.log.info(error.message);
-                    }
                     const { data } = yield this.octokit.repos.getContent(Object.assign(Object.assign({}, this.repo), { path: file.src }));
                     if ('content' in data) {
                         file.content = data.content;
@@ -175,7 +167,7 @@ function filesToChanges(files, log) {
                     encoding: 'base64',
                     mode: '100755'
                 };
-                log.info(`💈 Marking ${file.src} as executable`);
+                log.info(`--> Marking ${file.src} as executable`);
             }
             else {
                 obj[dest] = {

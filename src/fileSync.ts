@@ -73,14 +73,6 @@ export class FileSync {
 
         this.log.info(`📝 Fetching ${file.src}`)
 
-        try {
-          if (file.src.endsWith('.sh')) {
-            this.log.info(`📝 has .sh`)
-          }
-        } catch (error) {
-            this.log.info(error.message)
-        } 
-
         const {data} = await this.octokit.repos.getContent({
           ...this.repo,
           path: file.src
@@ -149,7 +141,7 @@ function filesToChanges(files: File[], log: Log): createPullRequest.Changes {
             mode: '100755'
           }
 
-          log.info(`💈 Marking ${file.src} as executable`)
+          log.info(`--> Marking ${file.src} as executable`)
 
         } else {
           obj[dest] = {
