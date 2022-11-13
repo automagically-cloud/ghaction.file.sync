@@ -66,6 +66,7 @@ export class FileSync {
 
   async run(): Promise<void> {
     this.log.info('🏃 Running GitHub File Sync')
+    this.log.info('🏃 Running GitHub File Sync 2')
     const config = await this.loadConfigFile()
     for (const sync of config.syncs) {
       this.log.startGroup(`📝 2 Fetching files from ${this.repoStr}`)
