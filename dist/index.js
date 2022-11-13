@@ -125,7 +125,7 @@ class FileSync {
                 for (const remoteRepoStr of sync.repos) {
                     const remoteRepo = this.toRepo(remoteRepoStr);
                     this.log.info(`💄 Creating pull request for ${toRepoStr(remoteRepo)}`);
-                    const prOptions = Object.assign(Object.assign({}, remoteRepo), { title: `🔃 Synced files from ${this.repoStr}`, body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by the [ghaction.file.sync](https://github.com/jetersen/ghaction.file.sync) workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`, head: `${toRepoStr(this.repo, '-')}-${this.gitSha}`, createWhenEmpty: false, changes: [filesToChanges(sync.files)] });
+                    const prOptions = Object.assign(Object.assign({}, remoteRepo), { title: `🔃 Synced files from ${this.repoStr}`, body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`, head: `${toRepoStr(this.repo, '-')}-${this.gitSha}`, createWhenEmpty: false, changes: [filesToChanges(sync.files)] });
                     if (this.dryRun) {
                         this.log.info('✔ No pull request was created due to dry run');
                     }

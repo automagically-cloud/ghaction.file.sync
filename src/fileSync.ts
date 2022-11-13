@@ -128,19 +128,29 @@ function filesToChanges(files: File[], log: Log): createPullRequest.Changes {
     (obj: {[path: string]: createPullRequest.File}, file) => {
       const dest = file.dest ? file.dest : file.src
 
-      if (file.src.endsWith('.sh')) {
-        var mode = '100755'
-        log.info('🔑 Marking .sh file as executable')
-      } else {
-        var mode = '100644'
-      }
-
       if (file.content) {
-        obj[dest] = {
-          content: file.content,
-          encoding: 'base64',
-          mode: mode
+
+        log.info('Debug:  ${file.src}')
+
+        if (file.src.endsWith('.sh')) {
+          obj[dest] = {
+            content: file.content,
+            encoding: 'base64',
+            mode: '100755'
+          }
+
+          log.info('🔑 Marking .sh file as executable')
+
+        } else {
+          obj[dest] = {
+            content: file.content,
+            encoding: 'base64',
+          }
+
+          log.info('🔑 Not touching this file')
+
         }
+
       }
       return obj
     },
