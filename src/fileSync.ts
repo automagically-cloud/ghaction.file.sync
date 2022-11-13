@@ -66,7 +66,6 @@ export class FileSync {
 
   async run(): Promise<void> {
     this.log.info('🏃 Running GitHub File Sync')
-    this.log.info('🏃 Running GitHub File Sync 2')
     const config = await this.loadConfigFile()
     for (const sync of config.syncs) {
       this.log.startGroup(`📝 Fetching files from ${this.repoStr}`)
@@ -150,7 +149,7 @@ function filesToChanges(files: File[], log: Log): createPullRequest.Changes {
             mode: '100755'
           }
 
-          log.info(`🔑 Marking .sh file ${file.src} as executable`)
+          log.info(`💈 Marking ${file.src} as executable`)
 
         } else {
           obj[dest] = {

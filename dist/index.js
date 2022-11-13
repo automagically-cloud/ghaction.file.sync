@@ -111,7 +111,6 @@ class FileSync {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             this.log.info('🏃 Running GitHub File Sync');
-            this.log.info('🏃 Running GitHub File Sync 2');
             const config = yield this.loadConfigFile();
             for (const sync of config.syncs) {
                 this.log.startGroup(`📝 Fetching files from ${this.repoStr}`);
@@ -176,7 +175,7 @@ function filesToChanges(files, log) {
                     encoding: 'base64',
                     mode: '100755'
                 };
-                log.info(`🔑 Marking .sh file ${file.src} as executable`);
+                log.info(`💈 Marking ${file.src} as executable`);
             }
             else {
                 obj[dest] = {
