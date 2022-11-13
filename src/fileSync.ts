@@ -87,7 +87,7 @@ export class FileSync {
           ...remoteRepo,
           title: `🔃 Synced files from ${this.repoStr}`,
           body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`,
-          head: `${toRepoStr(this.repo, '-')}-${this.gitSha}`,
+          head: `automagically-template-syncs`,
           createWhenEmpty: false,
           changes: [filesToChanges(sync.files, this.log),]
         }
@@ -124,9 +124,13 @@ function toRepoStr(repo: Repo, separator = '/'): string {
 
 function filesToChanges(files: File[], log: Log): createPullRequest.Changes {
 
+  log.info('filesToChanges')
+
   const result = files.reduce(
     (obj: {[path: string]: createPullRequest.File}, file) => {
       const dest = file.dest ? file.dest : file.src
+
+      log.info('Debug:  ${file.src} + ${file.content}')
 
       if (file.content) {
 
