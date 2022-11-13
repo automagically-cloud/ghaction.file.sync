@@ -25,7 +25,7 @@ export class FileSync {
     this.log = log
     this.octokit = octokit
     this.configFile = inputs.configFile
-    this.dryRun = inputs.dryRun
+    this.dryRun = true //inputs.dryRun
     this.repo = context.repo
     this.gitSha = context.sha.substring(0, 12)
     this.runId = context.runId
@@ -83,13 +83,20 @@ export class FileSync {
       for (const remoteRepoStr of sync.repos) {
         const remoteRepo = this.toRepo(remoteRepoStr)
         this.log.info(`💄 Creating pull request for ${toRepoStr(remoteRepo)}`)
+
+        this.log.info(`👋 Here I am`)
+
+        var changes = [filesToChanges(sync.files, this.log),]
+
+        this.log.info(changes.toString())
+
         const prOptions: createPullRequest.Options = {
           ...remoteRepo,
           title: `🔃 Synced files from ${this.repoStr}`,
           body: `🔃 Synced files from [${this.repoStr}](${this.htmlUrl})\n\nThis PR was created automatically by workflow run [#${this.runId}](${this.htmlUrl}/actions/runs/${this.runId})`,
           head: `automagically-template-syncs`,
           createWhenEmpty: false,
-          changes: [filesToChanges(sync.files, this.log),]
+          changes: changes
         }
         if (this.dryRun) {
           this.log.info('✔ No pull request was created due to dry run')
@@ -124,6 +131,11 @@ function toRepoStr(repo: Repo, separator = '/'): string {
 
 function filesToChanges(files: File[], log: Log): createPullRequest.Changes {
 
+  const log2 = new Log(false)
+
+  log2.info('log2 works')
+  
+  log.info('')
   log.info('filesToChanges')
 
   const result = files.reduce(
